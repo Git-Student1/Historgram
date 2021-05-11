@@ -1,8 +1,10 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,6 +31,9 @@ public class Histogram {
 			else if (c!=' '){ countFrequency(toUpperCase(c));}
 		}
 		for(Entry<Character, Integer> entry:frequencyMap.entrySet()) System.out.println(entry);
+	
+	
+	generateHistogram(frequencyMap,true);
 	}
 		
 
@@ -42,8 +47,28 @@ public class Histogram {
 	}
 
 	
-	private static void generateHistogram(Map<Character, Integer> dict, boolean addSeperator) {
+	private static void generateHistogram(Map<Character, Integer> dict, boolean addSeperator) throws IOException {
+		File HistogramFile = new File("src//Histogram.txt");
+		FileWriter fwriter = new FileWriter(HistogramFile);
+		//we need the method newLine of BufferedReader to not write anything in a single line
+		BufferedWriter bwriter = new BufferedWriter(fwriter);
+		//saves how often the most common character in this file occurs
+		int maxAmount = 1;
+		//searches how often the most common character in this file occurs
+		for(Character key:frequencyMap.keySet()) {
+			int amount= frequencyMap.get(key);
+			if (maxAmount<amount) maxAmount= amount;
+		}
 		
+		// writes the stars of the histogram into the file
+		for(Character key:frequencyMap.keySet()){
+			int numberOfStars=frequencyMap.get(key)*50/maxAmount; // the greatest amount of stars per char should be 15
+			bwriter.write(key+": ");
+			for (int index=0;index<numberOfStars;index++)bwriter.write("*");
+			bwriter.newLine();
+		}
+		bwriter.close();
+		fwriter.close();
 	}
 	
 	
